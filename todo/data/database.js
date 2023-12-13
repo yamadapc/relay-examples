@@ -33,8 +33,11 @@ const todoIdsByUser: Map<string, $ReadOnlyArray<string>> = new Map([
 
 // Seed initial data
 let nextTodoId: number = 0;
-addTodo('Taste JavaScript', true);
-addTodo('Buy a unicorn', false);
+// addTodo('Taste JavaScript', true);
+// addTodo('Buy a unicorn', false);
+for (let i = 0; i < 10; i += 1) {
+  addTodo(`watch story ${i}`, false);
+}
 
 function getTodoIdsForUser(id: string): $ReadOnlyArray<string> {
   return todoIdsByUser.get(id) || [];
@@ -151,4 +154,20 @@ export function renameTodo(id: string, text: string) {
 
   // Replace with the modified text value
   todosById.set(id, new Todo(id, text, todo.complete));
+}
+
+export function moveTodo(id: string, pivot: string, edge: 'top' | 'bottom') {
+  const todoIdsForUser = getTodoIdsForUser(USER_ID);
+
+  const todosWithoutSource = todoIdsForUser.filter(
+    (todoId: string): boolean => id !== todoId,
+  );
+  const pivotIndex = todosWithoutSource.findIndex((todoId) => todoId === pivot);
+  todosWithoutSource.splice(
+    edge === 'top' ? pivotIndex : pivotIndex + 1,
+    0,
+    id,
+  );
+  console.log(todoIdsForUser, '==>', todosWithoutSource);
+  todoIdsByUser.set(USER_ID, todosWithoutSource);
 }

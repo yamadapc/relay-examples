@@ -70,6 +70,7 @@ type Mutation {
   removeCompletedTodos(input: RemoveCompletedTodosInput!): RemoveCompletedTodosPayload
   removeTodo(input: RemoveTodoInput!): RemoveTodoPayload
   renameTodo(input: RenameTodoInput!): RenameTodoPayload
+  moveTodo(input: MoveTodoMutationInput!): MoveTodoMutationPayload
 }
 
 type AddTodoPayload {
@@ -140,5 +141,17 @@ type RenameTodoPayload {
 input RenameTodoInput {
   id: ID!
   text: String!
+  clientMutationId: String
+}
+
+type MoveTodoMutationPayload {
+  success: Boolean!
+  clientMutationId: String
+}
+
+input MoveTodoMutationInput {
+  id: ID!
+  before: String
+  after: String
   clientMutationId: String
 }

@@ -2,6 +2,7 @@
 import type {TodoList_user$key} from 'relay/TodoList_user.graphql';
 
 import {useAddTodoMutation} from '../mutations/AddTodoMutation';
+import {useMoveTodoMutation} from '../mutations/MoveTodoMutation';
 import {useMarkAllTodosMutation} from '../mutations/MarkAllTodosMutation';
 import Todo from './Todo';
 import TodoListFooter from './TodoListFooter';
@@ -54,6 +55,8 @@ export default function TodoList({userRef}: Props): React.Node {
     commitMarkAllTodosMutation(complete);
   };
 
+  const commitMoveTodoMutation = useMoveTodoMutation();
+
   return (
     <>
       <header className="header">
@@ -77,12 +80,28 @@ export default function TodoList({userRef}: Props): React.Node {
         <label htmlFor="toggle-all">Mark all as complete</label>
 
         <ul className="todo-list">
-          {user.todos.edges.map(({node}) => (
+          {user.todos.edges.map(({node}, index) => (
             <Todo
               key={node.id}
               todoRef={node}
               userRef={user}
               todoConnectionId={user.todos.__id}
+              onMoveDown={() => {
+                commitMoveTodoMutation({
+                  todoConnectionId: user.todos.__id,
+                  source: node.id,
+                  target: user.todos.edges[index + 1]?.node.id,
+                  edge: 'bottom',
+                });
+              }}
+              onMoveUp={() => {
+                commitMoveTodoMutation({
+                  todoConnectionId: user.todos.__id,
+                  source: node.id,
+                  target: user.todos.edges[index - 1]?.node.id,
+                  edge: 'top',
+                });
+              }}
             />
           ))}
         </ul>

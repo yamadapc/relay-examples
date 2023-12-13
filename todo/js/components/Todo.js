@@ -18,12 +18,16 @@ type Props = {|
   todoConnectionId: string,
   todoRef: Todo_todo$key,
   userRef: Todo_user$key,
+  onMoveDown: () => void,
+  onMoveUp: () => void,
 |};
 
 export default function Todo({
   userRef,
   todoRef,
   todoConnectionId,
+  onMoveDown,
+  onMoveUp,
 }: Props): React$Element<'li'> {
   const todo = useFragment(
     graphql`
@@ -93,7 +97,11 @@ export default function Todo({
         />
 
         <label onDoubleClick={handleLabelDoubleClick}>{todo.text}</label>
-        <button className="destroy" onClick={handleRemoveTodo} />
+        <div className="buttons">
+          <button onClick={onMoveDown}>Move down</button>
+          <button onClick={onMoveUp}>Move up</button>
+          <button className="destroy" onClick={handleRemoveTodo} />
+        </div>
       </div>
 
       {isEditing && (
